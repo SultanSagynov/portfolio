@@ -69,3 +69,5 @@ if __name__ == "__main__":
     output_file = r"c:\Users\SSagynov\python_exp\peak_finder_scipy\prim_flags.csv"  
    
     process_column_x(input_file,output_file, window_size=5, prominence=1)
+
+# further changes: change for dynamic URLs
