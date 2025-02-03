@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 import os
 import shutil
 
-# Load environment variables
 load_dotenv()
 
 api_key = os.getenv("OPENAI_API_KEY")
@@ -51,7 +50,6 @@ def save_to_chroma(chunks: list[Document]):
     if os.path.exists(CHROMA_PATH):
         shutil.rmtree(CHROMA_PATH)
 
-    # Create the DB and automatically persist it
     db = Chroma.from_documents(
         chunks, OpenAIEmbeddings(), persist_directory=CHROMA_PATH
     )
