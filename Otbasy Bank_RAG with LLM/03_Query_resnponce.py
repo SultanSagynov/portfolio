@@ -9,10 +9,8 @@ import os
 import warnings
 
 
-# Initialize colorama for color support
 init(autoreset=True)
 
-# Load environment variables
 load_dotenv()
 
 CHROMA_PATH = "chroma"
@@ -33,15 +31,12 @@ def main():
     if not api_key:
         raise ValueError("API key not found. Please check your .env file.")
     
-    # Prepare the DB
     embedding_function = OpenAIEmbeddings(openai_api_key=api_key)
     db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
 
-    # Initialize chat model
     model = ChatOpenAI(openai_api_key=api_key, max_tokens=500, temperature=0.7)
     warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-    # Start a conversation loop
     print(Fore.CYAN + "Добро пожаловать, я ваш ассистент в Отбасе банке, чем могу помочь? Для выхода с диалога наберите 'стоп'")
     context_memory = ""
     
@@ -51,34 +46,26 @@ def main():
             print(Fore.CYAN + "До свидания!")
             break
 
-        # Search the DB
         results = db.similarity_search_with_relevance_scores(query_text, k=5)
         
-        # Ensure results meet a threshold of similarity score
         if len(results) == 0 or results[0][1] < 0.8:
             print(Fore.RED + "Ассистент: Я не смог найти нужную информацию в базе данных. Попробуйте перефразировать.")
             continue
 
-        # Extract the context from the search results
         context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
         
-        # Include prior conversation context if available
         combined_context = f"{context_memory}\n\n{context_text}"
         
-        # Create the prompt for the model
         prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
         prompt = prompt_template.format(context=combined_context, question=query_text)
         
-        # Generate response using the model
         response_text = model.predict(prompt)
 
-        # Add response to the conversation context
         context_memory += f"\n\nВаш Вопрос: {query_text}\nАссистент:: {response_text}"
         
         # Retrieve sources for the response
         sources = [doc.metadata.get("source", None) for doc, _score in results]
         
-        # Output the result with colors
         print(Fore.GREEN + f"Ассистент:: {response_text}")
         print(Fore.MAGENTA + f"(Источник: {sources})")
 
