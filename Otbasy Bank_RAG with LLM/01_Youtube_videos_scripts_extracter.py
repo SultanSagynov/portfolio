@@ -37,7 +37,6 @@ def save_to_csv(data, file_name="russian_youtube_transcripts.csv"):
     df.to_csv(file_name, index=False)
     print(f"Transcripts saved to {file_name}")
 
-# List of YouTube video URLs
 video_urls = [
     'https://www.youtube.com/watch?v=BjP1F7A5LBw&list=PL1mxkDJa7Zy479R1dZkYhKKtDijx20mPU&index=1',
     'https://www.youtube.com/watch?v=BjP1F7A5LBw&list=PL1mxkDJa7Zy479R1dZkYhKKtDijx20mPU&index=1',
@@ -58,6 +57,5 @@ video_urls = [
     # Add more URLs here
 ]
 
-# Fetch and save transcripts
 transcripts_data = fetch_transcripts_from_urls(video_urls)
 save_to_csv(transcripts_data)
